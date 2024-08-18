@@ -1,6 +1,6 @@
 DATE: 05-09-2023
 MAVEN:
-its a build too1.
+its a build tool which was developed by Apache s/w foundation. It is used to add the dependencies.
 main file is POM.XML (project object model & Extensible markup language)
 POM.XML will have entire information of project.
 it is used to create artifact (war, jar, ear)
@@ -9,7 +9,7 @@ It was initially released on 13 July 2004.
 Maven is written in java (1.8.0)
 
 RAW: .java  (we cant use it)
-.java -- > compile -- > .class -- > .jar -- > package -- > .war
+.java -- > compile -- > .class -- > .jar -- >mvn package -- > .war
 
 .class 	: which can be executable
 .jar    : group of .class files (works for backend)
@@ -100,3 +100,7 @@ WHAT IF BUILD FAILS:
    42  mvn -version
    43  mvn compile
    44  history
+.Net - vscode
+Python - gradle
+java- maven, gradle,ant
+C,C++ - make file
