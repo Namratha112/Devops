@@ -84,7 +84,7 @@ file: to build files
 PORT CHANGING:
 vim /usr/lib/systemd/system/jenkins.service
 67 (8080=8090)
-systemctl daemon-reload
+systemctl daemon-reload→reloading the background services.
 systemctl restart jenkins.service
 systemctl status jenkins.service
 
