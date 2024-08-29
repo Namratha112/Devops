@@ -21,6 +21,7 @@ ENV:
 DEV	: DEVELOPERS
 QA	: TESTERS
 UAT	: CLIENT
+UAT - User Acceptance Testing(last stage of any software development process)
 
 THE ABOVE ENVS ARE CALLED AS PRE-PROD OR NON-PROD
 
@@ -95,21 +96,21 @@ line 7 (true=false)
 systemctl restart jenkins.service
 systemctl status jenkins.service
 
-
+By default, jenkins server excutes only 2 builds at a time.
 CHANGING BUILD LIMITS:
 dashboard -- > manage jenkins -- > nodes -- > built-in node -- > configure -- > number of executors -- > 3 -- > save
-
+If we run more builds, jenkins server may not work. If it will not respond, just reboot the server or just stop and start the server.
 
 HOW TO RESLOVE ISSUE WHEN JENKINS SERVER IS CRASHED: 
-when we stop and start server your ip will change and the services inside server also stop.
+when we stop and start server your ip will change and the services inside server also stop - so, restart the jenskins server.
 
 
 
 RESTORING DELETE JOBS:
 
-Dashboard -- > Manage Jenkins -- > Plugins -- > available plugins -- > Job Configuration History -- > install -- > go back to top page
+Dashboard -- > Manage Jenkins -- > Plugins -- > available plugins -- >search Job Configuration History -- > install -- > go back to top page(dashboard)
 
-now try to delete a job
+now try to delete a job- got to job configuration -> deleted jobs-> restore-> yes -> enable.
 
 HISTORY:
 31  vim jenkins.sh
