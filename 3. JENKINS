@@ -190,6 +190,9 @@ create job -- > Throttle builds -- > Number of build: 3 -- > time period: select
 
 make builds and test them
 
+We can trigger build remotely: select triggers build remotely give the token name and under that token name
+select link and copy paste on any browser.
+
 =================================================================
 
 MASTER AND SLAVE:
@@ -197,7 +200,7 @@ it is used to distribute the builds.
 it reduce the load on jenkins server.
 communication blw master and slave is ssh.
 Here we need to install agent (java-11).
-slave can use any platform.
+slave can use any platform(slave is platform independent).
 label = way of assingning work for slave.
 
 SETUP:
@@ -220,7 +223,7 @@ privatekey : pemfile of server -- > save -- >
 Host Key Verification Strategy: last option
 
 DASHBOARD -- > JOB -- > CONFIGURE -- > select RESTRTICT WHERE THIS JOB RUN -- > LABEL: SLAVE1 -- > SAVE
-Install git maven with java dependency on slave1.
+Install git maven with java dependency on slave1 to build any job on slave1(job related dependencies needs to be installed).
 
 
 LINKED JOBS: 
@@ -234,7 +237,7 @@ job1 -- > configuration -- > post build actions -- > build other projects -- > n
 
 =========================================================================
 PIPELINE: 
-stpe by step execution of particular process
+step by step execution of particular process
 series of events interlinked with each other
 pipelines are sytnax-based
 we use groovy language to write pipleine.
@@ -397,7 +400,8 @@ port: 9000
 req: t2 medium
 dependency: java-11
 
-SETUP:
+SETUP:(present on the raham sheik devops github ->allsetups-> sonarcube) presentd below.
+vim sonarcube.sh and paste the below code and run -> run sonarcube.sh
 
 #! /bin/bash
 #Launch an instance with 9000 and t2.medium
@@ -412,11 +416,11 @@ su - sonar
 
 #run this on server manually
 #sh /opt/sonarqube-8.9.6.50800/bin/linux/sonar.sh start
-#echo "user=admin & password=admin"
+#echo "user=admin & password=admin" ---- login cred
 
-after login -- > add project -- > manual -- > project key -- > netlfix -- > setup -- > token -- > netflix -- > generate -- > continue -- > maven 
+after login -- > add project -- > manual -- > project key -- > netlflix -- > setup -- > token -- > netflix -- > generate -- > continue -- > maven --->
 
-copy paste the code on pipeline:
+copy & paste the code on pipeline:
 
 pipeline {
     agent any 
@@ -461,7 +465,8 @@ pipeline {
     agent {
         label 'slave1'
     } 
-    
+
+chkconfig --  add that service on the background so that the jenkins server starts automatically, if we start and stop the server.
 ===================================================================================
 12-09-2023:
 
@@ -476,7 +481,11 @@ a. local vars: we can define inside job
 2. global vars: we can define outside jobs
 
 2. JENKINS ENV VARS:
-their vars are going to change as per build.
+these vars are going to change as per build.
+
+
+Global variables are assigned as:
+Dashboard-> Manage jenkins -> under system select system -> environment variables -> add name and their values --> save.
 
 HOW TO PASS VARIABLES ON PIPELINE:
 
@@ -492,11 +501,13 @@ pipeline {
         stage('one') {
             steps {
                 echo "hai all my name is $name and im from $loc"
-                sh 'env'
+                sh 'env' -- presents the outputs of all the jenkins environment variables(build number,build name).
             }
         }
     }
 }
+
+
 
 =====================================================================
 
@@ -517,7 +528,7 @@ pipeline {
     stages {
         stage('one') {
             steps {
-                s 'env'
+                sh 'env'
             }
         }
     }
@@ -532,32 +543,34 @@ pipeline {
 
 RBAC: ROLE BASE ACCESS CONTROL
 
-in real time to restrict the access for jenkins console we use rbac.
+In real time to restrict the access for jenkins console we use rbac.
 with rbac we can give set of limited permissions for user.
 
 1. user:
 dashboard -- > manage jenkins -- > users -- > create user (ramesh, suresh)
 
 2. Plugin: 
-Dashboard -- > Manage Jenkins -- >Plugins -- >available plugin  -- >Role-based Authorization Strategy -- >install
+Dashboard -- > Manage Jenkins -- >Plugins -- >available plugin  -- >search Role-based Authorization Strategy -- >install
 
 3. configure:
-Dashboard -- > Manage Jenkins -- >security -- > security -- > Authorization -- > Role-based Authorization -- > save
+Dashboard -- > Manage Jenkins -- >under security select security -- > Authorization -- > select Role-based Authorization -- > save
 
 4. manage and assign roles
 
-Dashboard -- > Manage Jenkins -- >Manage and Assign Roles -- > Manage Role
+Dashboard -- > Manage Jenkins -- >Manage and Assign Roles -- > select Manage Role and add the below roles.
+under Role to add -> add role name and then click add.
 role1: fresher -- > read
 role2: exp -- > admin
 
-ASSIGN ROLES
+ASSIGN ROLES:
+dashboard - > manage jenkins -> manage and assign roles -> assign roles-> select add users(add name,ok) and select their role.
 
 --------------------------------------------------------------
-
+setup the tomcat server in slave1.
 TOMCAT SETUP:
 1. wget http://dlcdn.apache.org/tomcat/tomcat-9/v9.0.80/bin/apache-tomcat-9.0.80.tar.gz
 2. tar -zxvf apache-tomcat-9.0.80.tar.gz
-3. vim apache-tomcat-9.0.80/conf/tomcat-users.xml
+3. vim apache-tomcat-9.0.80/conf/tomcat-users.xml  --> copy last three lines and paste,update as below.
 
   <role rolename="manager-gui"/>
   <role rolename="manager-script"/>
@@ -567,16 +580,12 @@ TOMCAT SETUP:
 5. sh apache-tomcat-9.0.80/bin/startup.sh
 
 public-ip slave:8080
-manager app -- > usrername and passowd
+select manager app -- > give usrername and passwd.
 
-Download pluguin -- > Deploy to container : this is to deploy on tomcat
+Download plugin: dashboard-> manage jenkins -> plugins -> available plugin -> select Deploy to container : this is to deploy on tomcat -> install.
 
-
-Dashboard
-Manage Jenkins
-Credentials
-System
-Global credentials (unrestricted)
+To hide the credentials:
+Dashboard ->Manage Jenkins -> Credentials-> System -> Global credentials (unrestricted)
 add credentials -- > username and password -- > save
 
 http://13.39.49.204:8080/netflix/
@@ -597,10 +606,11 @@ A. REPO AND BRANCH CONFIG
 B. SYNTAX
 C. PLUGINS
 
-
-vim /root/apache-tomcat-9.0.80/conf/server.xml
+To change the port number in tomcat:
+vim /root/apache-tomcat-9.0.80/conf/server.xml --> :69 change port number-> save.
 sh /root/apache-tomcat-9.0.80/bin/startup.sh
 sh /root/apache-tomcat-9.0.80/bin/shutdown.sh
+public-ip slave: new port number.
 
 pipeline {
     agent {
@@ -642,7 +652,7 @@ pipeline {
             steps {
                 deploy adapters:[
                     tomcat9(
-                        credentialsId: 'a3f384b0-0de7-4b62-9800-24043d1d135d',
+                        credentialsId: 'a3f384b0-0de7-4b62-9800-24043d1d135d',(gets id when we hide the creds).
                         path: '',
                         url: 'http://13.39.49.204:8080/'
                         )
@@ -653,3 +663,4 @@ pipeline {
         }
     }
 }
+
