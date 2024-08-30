@@ -64,7 +64,7 @@ install plugins and create user for login.
 INTEGRATION OF GIT AND MAVEN WITH JENKINS:
 NEW ITEM -- > NAME: NETFLIX JOB -- > FREE STYLE -- > OK 
 Source Code Management -- > GIT -- > https://github.com/devopsbyraham/jenkins-java-project.git
-Build Steps -- > add setp -- > Execute shell -- > save
+Build Steps -- > add setup -- > Execute shell -- > save
 
 ================================================================================================================================================
 07-09-2023:
@@ -78,14 +78,14 @@ create a ci job -- > Configure -- > This project is parameterized -- > choice --
 
 string: to pass multiple inputs 
 multi line string: to pass input on multiple lines
-bool: ture of false
+bool: ture or false
 file: to build files
 
 
 PORT CHANGING:
 vim /usr/lib/systemd/system/jenkins.service
 67 (8080=8090)
-systemctl daemon-reload→reloading the background services.
+systemctl daemon-reload  →reloading the background services.
 systemctl restart jenkins.service
 systemctl status jenkins.service
 
@@ -175,17 +175,18 @@ CREATE A CI JOB: Build Triggers -- > Poll Scm -- > * * * * * -- > save
 
 limitation:
 9am -- > 7 am : time waste 
+It builds at that mentioned time, if the code gets changed within the mentioned time.
 
 Webhooks: it will trigger the build the moment we commit the code
 
 github -- > repo -- > settings -- > webhooks -- > add webhook -- >
 Payload URL: http://13.39.14.187:8080/github-webhook/ -- > Content type: application/json -- > Add webhook
 
-Jenkins Dashboard -- > create ci job -- > Build triggers -- > GitHub hook trigger for  GITScm polling -- > save  
+Jenkins Dashboard -- > create ci job -- > Build triggers -- > select GitHub hook trigger for  GITScm polling -- > save  
 
 
 THROTTLE BUILD: to restrict number of builds per interval.
-create job -- > Throttle builds -- > Number of build: 3 -- > time period: hours -- > save 
+create job -- > Throttle builds -- > Number of build: 3 -- > time period: select any time(hours) -- > save 
 
 make builds and test them
 
@@ -204,22 +205,22 @@ SETUP:
 amazon-linux-extras install java-openjdk11 -y
 
 #STEP-2: SETUP THE SLAVE SERVER
-Dashboard -- > Manage Jenkins -- > Nodes & Clouds -- > New node -- > nodename: abc -- > permanaent agent -- > save 
+Dashboard -- > Manage Jenkins -- > Nodes -- > New node -- > nodename: abc (slave1)-- > permanaent agent -- > create and then configure the slave using the below configuration steps.
 
 CONFIGURATION OF SALVE:
 
 Number of executors : 3 #Number of Parallel builds
 Remote root directory : /tmp #The place where our output is stored on slave sever.
-Labels : swiggy #place the op in a particular slave
-useage: last option
-Launch method : last option 
+Labels : swiggy(slave1) #place the op in a particular slave
+useage: select last option
+Launch method : select last option 
 Host: (your privte ip)
 Credentials -- > add -- >jenkins -- > Kind : ssh username with privatekey -- > username: ec2-user 
 privatekey : pemfile of server -- > save -- > 
 Host Key Verification Strategy: last option
 
-DASHBOARD -- > JOB -- > CONFIGURE -- > RESTRTICT WHERE THIS JOB RUN -- > LABEL: SLAVE1 -- > SAVE
-
+DASHBOARD -- > JOB -- > CONFIGURE -- > select RESTRTICT WHERE THIS JOB RUN -- > LABEL: SLAVE1 -- > SAVE
+Install git maven with java dependency on slave1.
 
 
 LINKED JOBS: 
@@ -234,7 +235,7 @@ job1 -- > configuration -- > post build actions -- > build other projects -- > n
 =========================================================================
 PIPELINE: 
 stpe by step execution of particular process
-series of events interlinekd with each other
+series of events interlinked with each other
 pipelines are sytnax-based
 we use groovy language to write pipleine.
 its a DSL (domain specific language)
