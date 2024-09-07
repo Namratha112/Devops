@@ -163,6 +163,12 @@ yaml start with --- and end with ...(optional)
 we write it on list format.
 extension is .yml or .yaml
 
+After running the playbook, will get Ok= taks+1 that 1 is gathering facts.
+ok: The total number of tasks that were executed successfully, including the implicit fact-gathering task (if enabled).
+changed: The number of tasks that made changes on the managed host(s).
+
+--> Yamllint.com is used to validatre our playbooks syntax.
+
 PLAYBOOK1:
 
 vim raham.yml
@@ -615,7 +621,7 @@ vim master.yml
     - raham
     - file
 
-ansible-playbook master.yml
+ansible-playbook master.yml -- this book executes the mentioned specified roles.
 
 ANSIBLE-GALAXY: used to store playbooks like code on github.
 
