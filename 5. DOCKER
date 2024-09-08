@@ -1,3 +1,4 @@
+Types of applications:
 MONOLITHIC: SINGLE APP -- > SINGLE SERVER -- > SINGLE DATABASE
 MICRO SERVICES: SINGLE APP -- > MULTIPLE SERVERS -- > MULTIPLE DATABASES
 
@@ -7,15 +8,16 @@ MAINTAINANCE
 
 
 LIMITATIONS OF MONLITHIC:
-1. SERVER PERFOMANCE
+1. SERVER PERFORMANCE
 
 
 CONTAINERS:
 SERVER = CONTAINER
+container is like a server or virtual machine is used to create and deploy the application.
 
 Containers will not have os by default.
-cant able to install pacakages
-cant able to deploy the app.
+can't able to install pacakages
+can't able to deploy the application.
 
 images: inside the image we have os and packages
 
@@ -43,33 +45,38 @@ language: go lang
 
 ARCHITECTURE:
 DOCKER CLIENT: its a way of interacting with docker (command -- > op)
-DOCKER DAEMON: it manage all the docker components (images, cont, volumes, nlw)
+DOCKER DAEMON: it manage all the docker components (images, cont, volumes, nlw) - docker engine is nothing but a docker daemon manages images etc..
 DOCKER HOST: where we installed docker
 DOCKER REGISTRY: it manages all the  docker images on internet.
 
 
 INSTALLATION:
 yum install docker -y
-systemctl start docker
-systemctl status docker
+systemctl start docker or service docker start
+systemctl status docker or service docker stop
 
 
-docker pull amazonlinux		: to downlaod image
+docker pull amazonlinux		: to downlaod image or to get the image.
 docker run -it --name cont1 amazonlinux : to create conatiner
+it means the interactive terminal.
+cont1: name of the container.
 
 yum install git -y
 yum install maven -y
 touch file1
 
-ctrl p q
+ctrl p q  - to comeout of the container.
 
 docker images		: to list images
 docker start cont1	: to start cont1
 docker stop cont1	: to stop cont1
+docker attach cont1: to enter into the cont1.
 docker kill cont1	: to stop immedieatly cont1
 docker ps 		: to see running containers
 docker ps -a		: to see all containers
 
+stop vs kill : kill immediately stops the container. stop takes 5sec time to stop as it takes time to stop all the services inside the container.
+du -sh: to check the size.
 HISTORY:
   1  yum install docker -y
     2  docker version
@@ -100,7 +107,7 @@ OS LEVEL VIRTUALIZATION:
 
 NOTE: apt is package manager for ubuntu
 Redhat: Yum
-Ubuntu: Apt
+Ubuntu: Apt - advance package tool.
 
 without running apt update -y we cant install packages
 
@@ -111,10 +118,10 @@ apt update -y
 apt install git maven apache2 tree -y
 touch file{1..5}
 
-docker commit cont1 raham
+docker commit cont1 raham  - to copy the cont1 info to the raham image.
 docker run -it --name cont2 raham
 
-check version now
+check version now in cont2.
 
 
 
@@ -129,26 +136,26 @@ Dockerfile -- > Image -- > Container -- >
 
 COMPONENTS:
 FROM		: to base image (gives os)
-RUN		: to execute linux commands (image creation)
-CMD		: to execute linux commands (container creation)
+RUN		: to execute linux commands (image creation) - runs packages while building the image.
+CMD		: to execute linux commands (container creation) - runs packages while container creation.
 ENTRYPOINT	: high priority than cmd
-COPY 		: to copy local files to conatainer
-ADD 		: to copy Intenet files to conatainer
-WORKDIR		: to go desired folder
+COPY 		: to copy local files to container
+ADD 		: to copy Intenet files to container
+WORKDIR		: to get into desired folder after entering into container.
 LABEL 		: to attach our tags/labels
 ENV		: variables which run inside conatiner (image)
 ARGS		: variables which run outside conatiner(containers)
-VOLUME		: used to create volume for conatiner
-EXPOSE		: used to give port number
+VOLUME		: used to create volume for container - these are used to store the data of the container.
+EXPOSE		: used to give port number to the container. 
 
-EX: -1
+EX: -1 ---- vim Dockerfile
 
 FROM ubuntu
 RUN apt update -y
 RUN apt install git maven tree apache2 -y
 
-Build : docker build -t netflix:v1 .
-cont: docker run -it --name cont3 netflix:v1
+Build : docker build -t netflix:v1 .   --- to run the docker file and . represents where we need to run that file(current directory). netflix:v1 - name of the image.
+cont: docker run -it --name cont3 netflix:v1  - creating the container.
 
 
 ex-2:
@@ -165,7 +172,7 @@ EX-3:
 FROM ubuntu
 RUN apt update -y
 RUN apt install git maven tree apache2 -y
-COPY index.html /tmp
+COPY index.html /tmp  -- /tmp destination folder.
 ADD https://dlcdn.apache.org/maven/maven-3/3.8.8/binaries/apache-maven-3.8.8-bin.tar.gz /tmp
 
 EX-4:
@@ -179,7 +186,7 @@ WORKDIR /tmp
 LABEL author rahamshaik
 
 
-docker inspect cont7 
+docker inspect cont7 -- to get the entire information of the container.
 docker inspect cont7 | grep -i author
 
 
@@ -216,11 +223,11 @@ EXPOSE 8080
 
 COMMANDS:
 docker ps -a -q		: to list conatier ids
-docker stop $(docker ps -a -q) : to stop all conatiners
-docker rm $(docker ps -a -q) : to delete all conatiners
+docker stop $(docker ps -a -q) : to stop all containers
+docker rm $(docker ps -a -q) : to delete all containers
 
 docker images -q	: to print image ids
-docker rmi -f $(docker images -q) : to delete all images
+docker rmi -f $(docker images -q) : to delete all images -- rmi means removing the images.
 
 HISTORY: 1  yum install docker -y
     2  service docker start
@@ -299,6 +306,7 @@ cd volume1
 touch file{1..10}
 ctrl p q
 
+copying the volume from one container to another container.
 docker run -it --name cont2 --volumes-from cont1 --privileged=true ubuntu
 cd volume1
 ll
@@ -317,11 +325,11 @@ ll
 ctrl p q
 
 3. VOLUME MOUNTING:
-
+creating the volume outside and attaching it to the container.
 volume commands:
-docker volume create volume3
-docker volume ls
-docker volume inspect volume3
+docker volume create volume3 - creating the volume
+docker volume ls - listing the volumes 
+docker volume inspect volume3 - to get the information of the volume3
 
 cd /var/lib/docker/volumes/volume3/_data
 touch python{1..10}
@@ -331,23 +339,34 @@ docker run -it --name cont5 --mount source=volume3,destination=/volume3 ubuntu
 
 4. MOVING FILES FROM LOCAL TO CONTAINER:
 
-create a connection and attach a volume for it
+create a container and attach a volume for it
+
+for ex, if we want to send local files to the cont6
 
 touch raham{1..10}
-docker inspect cont6
+docker inspect cont6 - It gives the entire information about the cont6(to get to know which volume was attached to the container)
 docker volume inspect volume4
-cp * /var/lib/docker/volumes/volume4/_data
+cp * /var/lib/docker/volumes/volume4/_data - copying all the files to the volume4.
 
 
-5.
+5.Directly creating the volume and sending files via CLI.
 touch raham{1..10}
 cp * /home/ec2-user
 docker run -it --name cont12 -v /home/ec2-user:/abcd ubuntu
 
 SYSTEM COMMANDS:
-docker system df	: show docker components resource utilization
+docker system df	: show docker components resource utilization(It gives how many images were created and which are active and their size, and the same info for
+containers, local volumes and build cache)
 docker system df -v	: show docker components resource utilization individually
 docker system prune	: to remove unused docker components
+The above cmnd will remove:
+1. all stopped containers.
+2. all networks not used by atleast one container
+3. all dangling images
+4.all dangling build cache
+
+docker network create raham1 - creating the network raham.
+docker system prune - it will remove the above network as it is not attached to any container.
 
 JENKINS SETUP:
 docker run -it --name cont1 -p 8080:8080 jenkins/jenkins:lts
