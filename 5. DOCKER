@@ -47,13 +47,13 @@ ARCHITECTURE:
 DOCKER CLIENT: its a way of interacting with docker (command -- > op)
 DOCKER DAEMON: it manage all the docker components (images, cont, volumes, nlw) - docker engine is nothing but a docker daemon manages images etc..
 DOCKER HOST: where we installed docker
-DOCKER REGISTRY: it manages all the  docker images on internet.
+DOCKER REGISTRY: it manages all the  docker components on internet.
 
 
 INSTALLATION:
 yum install docker -y
 systemctl start docker or service docker start
-systemctl status docker or service docker stop
+systemctl status docker or service docker status
 
 
 docker pull amazonlinux		: to downlaod image or to get the image.
@@ -109,7 +109,7 @@ NOTE: apt is package manager for ubuntu
 Redhat: Yum
 Ubuntu: Apt - advance package tool.
 
-without running apt update -y we cant install packages
+without running apt update -y we cant install packages in ubuntu.
 
 WORKING:
 docker pull ubuntu
@@ -154,7 +154,7 @@ FROM ubuntu
 RUN apt update -y
 RUN apt install git maven tree apache2 -y
 
-Build : docker build -t netflix:v1 .   --- to run the docker file and . represents where we need to run that file(current directory). netflix:v1 - name of the image.
+Build : docker build -t netflix:v1 .   --- to run the docker file and . represents where we need to run that file(. means current directory). netflix:v1 - name of the image.
 cont: docker run -it --name cont3 netflix:v1  - creating the container.
 
 
@@ -456,6 +456,7 @@ RUN apt update -y
 RUN apt install apache2 -y
 COPY index.html /var/www/html
 CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]
+d-detach mode. cmd cmnd actually runs the pacjages while running the container, -d makes the packages to run without eunning the container.
 
 create index.html
 
@@ -489,23 +490,26 @@ DOCKER COMPOSE:
 its a tool used to launch multiple conatiners.
 we can create multiple conatiners on single hosts.
 all of the services informatiom we are going to write on a file.
-here we use docker-compose/compose file.
+here we use docker-compose/docker-compose.yml or yaml file.
 it will be on yaml format.
 we use key-value pair (dictionary) (.yml or .yaml)
-used to manage multiple servivces with help of a file.
+used to manage multiple servivces with the help of a file.
 
 
 SETUP:
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose - This command uses curl to download 
+Docker Compose from GitHub and saves it to /usr/local/bin/docker-compose. The -L option follows any redirects, and $(uname -s) and $(uname -m) dynamically insert the operating system 
+and machine architecture, ensuring you get the correct version.
 ls /usr/local/bin/
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose version
 
+When we download any package from the internet, first we need to move that package into the bin folder and then we have to give the executable permissions.
 
 vim docker-compose.yml
 
-version: '3.8'
+version: '3.8'  # for docker engine of version 20
 services:
   movies:
     image: movies:v1
@@ -524,20 +528,20 @@ services:
     ports:
       - "84:80"
 
-Note: remove all the conatiners
+Note: remove all the manually created conatiners as the posrtr numbers for automated and manually created are same.
 
 Commands:
 docker-compose up -d	: to run all services
 docker-compose down	: to remove all services
 docker-compose stop	: to stop all services
 docker-compose kill	: to kill all services
-docker-compose rm	: to remove all services which is on stopped state
+docker-compose rm	: to remove all services which are on stopped state
 docker-compose start	: to start all services
 docker-compose pause	: to pause all services
 docker-compose unpause	: to unpause all services
 docker-compose images	: to get all images managed by compose file
 docker-compose ps -a	: to get all containers managed by compose file
-docker-compose logs	: to get all logs managed by compose file
+docker-compose logs	: to get all logs managed by compose file or to view the output of the container.
 docker-compose scale dth=10: to create 10 containers of dth
 docker-compose top	: to get all process managed by conatiners on compose file
 
