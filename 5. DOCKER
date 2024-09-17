@@ -718,5 +718,9 @@ by default containers are not having limts.
 
 docker run -itd --name cont3 --cpus="0.5" --memory="500mb" ubuntu 
 docker inspect cont3
-docker stats
+docker stats - gives the hardware information of the containers(cpu,mem,pids,blocks)
 docker top cont3
+
+jfrog: used to store the artifacts but not used much as it requires 2 servers to maintain, mostly uses S3
+bucket(as maintaining bucket is cheaper than maintaining 2 servers)
+port:8081.
