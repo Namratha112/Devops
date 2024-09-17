@@ -76,7 +76,7 @@ docker ps 		: to see running containers
 docker ps -a		: to see all containers
 
 stop vs kill : kill immediately stops the container. stop takes 5sec time to stop as it takes time to stop all the services inside the container.
-du -sh: to check the size.
+du -sh: to check the occupied size.
 HISTORY:
   1  yum install docker -y
     2  docker version
