@@ -12,6 +12,7 @@ A: APPLICATION
 
 NOTE: k8s dont communicate with containers.
 it communicate with pods.
+It automates load balancing, deployment and scaling and it has GUI as well.
 
 COMPONENTS:
 MASTER NODE:
