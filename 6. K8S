@@ -17,14 +17,14 @@ It automates load balancing, deployment and scaling and it has GUI as well.
 COMPONENTS:
 MASTER NODE:
 1. API SERVER: its for communicating with cluster, it takes command executes and gives output.
-2. ETCD: its a DB od cluster, all the cluster info will store here.
+2. ETCD: its a DB of cluster, all the cluster info will store here.
 3. SCHEDULER: schedules pods on worker nodes, based on hardware resources.
 4. CONTROLLER: used to control the k8s objects.
 1. cloud controllers
 2. kube controllers
 
 WORKER NODE:
-KUBELET: its an agent used to communicate with master.
+KUBELET: its an agent used to communicate with master.(sends happend events info to the master node)
 KUBEPROXY: it deals with nlw.
 POD: its a group of containers.
 
@@ -49,7 +49,7 @@ It is used for development, testing, and experimentation purposes on local.
 Here Master and worker runs on same machine.
 It is a platform Independent.
 
-NOTE: But we dont implement this in real-time
+NOTE: But we dont implement this in real-time as it works on single node if that single nodes gets crashed everything gone.
 
 REQUIRMENTS:
 2 CPUs or more
@@ -74,11 +74,11 @@ K8's cannot communicate with containers, they can communicate with only pods.
 
 
 IMPERATIVE: 
-kubectl run pod1 --image rahamshaik/paytmtrain:latest
-kubectl get po/pod/pods
-kubectl get po/pod/pods -o wide
-kubectl describe pod pod1
-kubectl delete pod pod1
+kubectl run pod1 --image rahamshaik/paytmtrain:latest - creating the pod.
+kubectl get po/pod/pods - listing the pods.
+kubectl get po/pod/pods -o wide - to get the additional info(ip, on which node its working etc).
+kubectl describe pod pod1 - to get the complete info of pod.
+kubectl delete pod pod1 - deleting the pod.
 
 Declarative:
 vim abc.yml
@@ -138,12 +138,12 @@ spec:
 
 kubectl create -f abc.yml
 
-kubectl get rs
-kubectl get rs -o wide
-kubectl describe rs swiggy-rs
+kubectl get rs - listing the replicas.
+kubectl get rs -o wide - listing additional info.
+kubectl describe rs swiggy-rs - getting the complete info.
 kubectl delete rs swiggy-rs
 kubectl edit rs/swiggy-rs
-
+drawback: edited options are not reflected to the created replicas.
 
 
 SCALING: 
@@ -191,10 +191,10 @@ kubectl get deploy -o wide
 kubectl describe deploy swiggy-rs
 kubectl edit deploy/swiggy-rs
 kubectl delete deploy swiggy-r
-kubectl delete po --all
+kubectl delete po --all - deleting all the pods.
 
 
-KUBECOLOR:
+KUBECOLOR: gives color to the output.
 
 wget https://github.com/hidetatz/kubecolor/releases/download/v0.0.25/kubecolor_0.0.25_Linux_x86_64.tar.gz
 tar -zxvf kubecolor_0.0.25_Linux_x86_64.tar.gz
