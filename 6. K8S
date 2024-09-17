@@ -112,7 +112,7 @@ we can distribute the load also.
 LABLE: assing to a pod for identification. to work with them as single unit.
 SELECTOR: used to identify the pod with same label.
 
-kubectl api-resources
+kubectl api-resources - to get the short names and the kinds of the objects
 
 REPLICASET:
 
