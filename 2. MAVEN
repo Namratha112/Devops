@@ -41,6 +41,8 @@ mvn install	: to create artifact (maven home dir .m2)
 mvn clean packge: to perform entire goals 
 mvn clean	: to delete target
 
+mvn package command will compile source code and also package it as a jar or war as per pom file and put it into the target folder(by default). 
+mvn install command will compile and package, but it will also put the package in your local repository.
 
 maven			ant
 pom.xml			build.xml
