@@ -382,7 +382,8 @@ source .bashrc
 
 SETP-3: CREATING BUCKET - Here bucket is used to store the entire information of the infrastructure.
 aws s3api create-bucket --bucket devopsbyraham007.k8s.local --region us-east-1
-aws s3api put-bucket-versioning --bucket cloudanddevopsbyraham007.k8s.local --region us-east-1 --versioning-configuration Status=Enabled
+aws s3api put-bucket-versioning --bucket cloudanddevopsbyraham007.k8s.local --region us-east-1 --versioning-configuration Status=Enabled  --versioning is enabled
+as to retrieve the deleted objects(if we delete the cluster then we can we retrieve the objects in the bucket).
 export KOPS_STATE_STORE=s3://cloudanddevopsbyraham007.k8s.local
 
 SETP-4: CREATING THE CLUSTER
@@ -407,11 +408,15 @@ Suggestions:
 
 
 ADMIN ACTIVITIES:
-To scale the worker nodes:
+To scale the worker nodes and for editing as well:
 kops edit ig --name=rahams.k8s.local nodes-us-east-1a
 kops update cluster --name rahams.k8s.local --yes --admin 
 kops rolling-update cluster --yes
 
+kubectl create -f abc.yml - use the same deployment code.
+kubectl get po
+kubectl get po -o wide
+kubectl scale deploy/swiggy-rs --replicas=8
 kubectl describe node node_id
 kops delete cluster --name rahams.k8s.local --yes
 
@@ -464,20 +469,20 @@ HISTORY:
 
 NAMESPACES:
 
-NAMESPACE: It is used to divide the cluster to multiple teams on real time.
+NAMESPACE: It is used to divide the cluster into multiple teams on real time.
 it is used to isolate the env.
 
 CLUSTER: HOUSE
 NAMESPACES: ROOM
 
 Each namespace is isolated.
-if your are room-1 are you able to see room-2.
+if your are room-1 are you able to see room-2 - no.
 we cant access the objects from one namespace to another namespace.
 
 
 TYPES:
 
-default           : Is the default namespace, all objects will create here only
+default           : It's the default namespace, all objects will create here only.
 kube-node-lease   : it will store object which is taken from one namespace to another.
 kube-public	  : all the public objects will store here.      
 kube-system 	  : default k8s will create some objects, those are storing on this ns.
@@ -485,16 +490,21 @@ kube-system 	  : default k8s will create some objects, those are storing on this
 kubectl get pod -n kube-system	: to list all pods in kube-system namespace
 kubectl get pod -n default	: to list all pods in default namespace
 kubectl get pod -n kube-public	: to list all pods in kube-public namespace
-kubectl get po -A		: to list all pods in all namespaces
+kubectl get po -A		: to list all pods in all namespaces( lists the pods and also specifies the corresponding namespaces for the pods).
 
 kubectl create ns dev	: to create namespace
+kubectl get ns - to list the namespaces.
 kubectl config set-context --current --namespace=dev : to switch to the namespace
-kubectl config view --minify | grep namespace : to see current namespace
-kubectl delete ns dev	: to delete namespace
-kubectl delete pod --all: to delete all pods
+kubectl config view or kubectl config view --minify or kubectl config view --minify | grep namespace : to get the current namespace.
+kubectl run devpod1 --image nginx - creating the pod.
+kubectl get po - to get the pods in that namespace. 
+kubectl get po -n namespacename: to list the pods of that particular namespace.
+kubectl delete ns dev	: to delete namespace 
+kubectl delete po devpod1 -n dev( specify the namespace if we are in diff namespace).
+kubectl delete pod --all: to delete all the pods
 
 
-NOTE: By deleting  the ns all objects also gets deleted.
+NOTE: By deleting the ns all objects also gets deleted.
 in real time we use rbac concept to restrict the access from one namespace to another.
 so users cant access/delete ns, because of the restriction we provide.
 we create roles and rolebind for the users.
@@ -539,6 +549,11 @@ spec:
   ports:
     - port: 80
 
+kubectl create -f abc.yml
+kubectl get deploy,svc lists the deployments and services.
+kubectl apply -f abc.yml - applying the changes.
+kubectl delete -f abc.yml - deleting the objects which are created from that file.
+
 DRAWBACK:
 We cannot use app outside.
 
@@ -580,7 +595,8 @@ spec:
       targetPort: 80
       nodePort: 31111
 
-NOTE: UPDATE THE SG (REMOVE OLD TRAFFIC AND GIVE ALL TRAFFIC & SSH)
+NOTE: UPDATE THE SG (REMOVE OLD TRAFFIC AND GIVE ALL TRAFFIC & SSH) - under created instanes
+update the inbound rules to all traffic to allow all the ports).
 DRAWBACK:
 PORT RESTRICTION.
 
@@ -620,6 +636,10 @@ spec:
     - port: 80
       targetPort: 80
 
+kubectl get deploy,svc - lists the deployments and services(under the service will get the
+load balancer id paste that in the browser will get the application).
+kops get cluster - listimg the clusters.
+kops delete cluster --name rahams.k8s.local --yes - deleting the cluster.
 
 
 HISTORY:
