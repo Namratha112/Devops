@@ -11,21 +11,21 @@ C: CONTAINER
 A: APPLICATION
 
 NOTE: k8s dont communicate with containers.
-it communicate with pods.
+it communicates with pods.
 It automates load balancing, deployment and scaling and it has GUI as well.
 
 COMPONENTS:
 MASTER NODE:
 1. API SERVER: its for communicating with cluster, it takes command executes and gives output.
 2. ETCD: its a DB of cluster, all the cluster info will store here.
-3. SCHEDULER: schedules pods on worker nodes, based on hardware resources.
+3. SCHEDULER: schedules pods on worker nodes, based on hardware resources(selects higher hardware resources)
 4. CONTROLLER: used to control the k8s objects.
-1. cloud controllers
-2. kube controllers
+1. cloud controllers - creating the kubernetes cluster on the cloud.
+2. kube controllers - creating the kubernetes cluster on premises.
 
 WORKER NODE:
 KUBELET: its an agent used to communicate with master.(sends happend events info to the master node)
-KUBEPROXY: it deals with nlw.
+KUBEPROXY: it deals with the nlw(Ex: if the pod1 communicates with the pod2 it creates the necessary n/w for them to communicate).
 POD: its a group of containers.
 
 
@@ -46,7 +46,7 @@ MINIKUBE:
 It is a tool used to setup single node cluster on K8's. 
 It contains API Servers, ETDC database and container runtime
 It is used for development, testing, and experimentation purposes on local. 
-Here Master and worker runs on same machine.
+Here Master and worker nodes runs on same machine.
 It is a platform Independent.
 
 NOTE: But we dont implement this in real-time as it works on single node if that single nodes gets crashed everything gone.
@@ -54,9 +54,9 @@ NOTE: But we dont implement this in real-time as it works on single node if that
 REQUIRMENTS:
 2 CPUs or more
 2GB of free memory
-20GB of free disk space
+20GB of free disk space - volume in AWS instance creation.
 Internet connection
-Container or virtual machine manager, such as: Docker.
+Container or virtual machine manager, such as: Docker for the image.
 
 
 
@@ -72,12 +72,32 @@ K8's cannot communicate with containers, they can communicate with only pods.
 1. Imperative(command) 
 2. Declarative (Manifest file)
 
+apt update - shows the packages that are need to be update.
+apt upgrade - updates the packages.
+kubectl is used to run any cmnd in the kubernetes.
+
+SETUP:
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install curl wget apt-transport-https -y
+sudo curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo mv minikube-linux-amd64 /usr/local/bin/minikube
+sudo chmod +x /usr/local/bin/minikube
+sudo minikube version
+sudo curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+sudo echo "$(cat kubectl.sha256) kubectl" | sha256sum --check
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+sudo minikube start --driver=docker --force
+
 
 IMPERATIVE: 
 kubectl run pod1 --image rahamshaik/paytmtrain:latest - creating the pod.
 kubectl get po/pod/pods - listing the pods.
 kubectl get po/pod/pods -o wide - to get the additional info(ip, on which node its working etc).
-kubectl describe pod pod1 - to get the complete info of pod.
+kubectl describe pod pod1 - to get the complete info of the pod.
 kubectl delete pod pod1 - deleting the pod.
 
 Declarative:
@@ -109,7 +129,7 @@ if we delete one pod it will create automatically.
 we can distribute the load also.
 
 
-LABLE: assing to a pod for identification. to work with them as single unit.
+LABLE: assing to a pod for identification and to work with them as single unit.
 SELECTOR: used to identify the pod with same label.
 
 kubectl api-resources - to get the short names and the kinds of the objects
@@ -156,16 +176,21 @@ kubectl scale rs/swiggy-rs --replicas=5
 
 SCALING FOLLOWS LIFO PATTERN:
 LIFO: LAST IN FIRST OUT
-the pod which is created will be deleted first automatically when we scale out.
+The pod which is created will be deleted first automatically when we scale out.
+
+kubectl describe pod train-rs-24xvk - describing the each pod after scaling.
+kubectl describe pod - describes all pods.
+kubectl delete pod -l app=train - deleting the pods which are under the train.
 
 
 DEPLOYMENT:
-it will do all operations link RS.
+it will do all operations like RS.
 it will do roll back which cannot be done in rs.
 
 rs -- > pods
 deployment -- > rs -- > pods
 
+vim abc.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -186,12 +211,23 @@ spec:
       - name: cont1
         image: nginx
 
-kubectl get deploy
-kubectl get deploy -o wide
+kubectl create -f abc.yml
+
+kubectl get deploy - listing the deployments
+kubectl get deploy -o wide - lists the additional info of the deployments.
 kubectl describe deploy swiggy-rs
 kubectl edit deploy/swiggy-rs
-kubectl delete deploy swiggy-r
+kubectl delete deploy swiggy-rs
 kubectl delete po --all - deleting all the pods.
+
+Here if we edit the deployment, first it creates the pods with the new info and deletes the created pods.
+
+kubectl scale deploy/train-rs --replicas=10 - scaling
+
+SCALING FOLLOWS LIFO PATTERN:
+LIFO: LAST IN FIRST OUT
+The pod which is created will be deleted first automatically when we scale out.
+
 
 
 KUBECOLOR: gives color to the output.
@@ -202,6 +238,9 @@ tar -zxvf kubecolor_0.0.25_Linux_x86_64.tar.gz
 chmod +x kubecolor
 mv kubecolor /usr/local/bin/
 kubecolor get po
+
+kubecolor logs train-rs-6cddf5c876-wh6mr - checking logs of individual pods.
+kubecolor logs train-rs-6cddf5c876-wh6mr -c cont1 - checking logs of the entire container.
 
 HISTORY:
 1  vim minikube.sh
@@ -290,138 +329,8 @@ HISTORY:
    84  kubecolor logs train-rs-6cddf5c876-wh6mr
    85  kubecolor logs train-rs-6cddf5c876-wh6mr -c cont1
    86  history
-root@ip-172-31-10-159:~#
-
-There are multiple ways to setup kubernetes cluster.
-
-1.SELF MANAGER K8'S CLUSTER
-a.mini kube (single node cluster)
-b.kubeadm(multi node cluster)
-c. KOPS
-
-2. CLOUD MANAGED K8'S CLUSTER
-a. AWS EKS
-b.AZURE AKS
-c.GCP GKS
-d.IBM IKE
-
-MINIKUBE:
-It is a tool used to setup single node cluster on K8's. 
-It contains API Servers, ETDC database and container runtime
-It is used for development, testing, and experimentation purposes on local. 
-Here Master and worker runs on same machine.
-It is a platform Independent.
-
-NOTE: But we dont implement this in real-time
-
-REQUIRMENTS:
-2 CPUs or more
-2GB of free memory
-20GB of free disk space
-Internet connection
-Container or virtual machine manager, such as: Docker.
-
-SETUP:
-sudo apt update -y
-sudo apt upgrade -y
-sudo apt install curl wget apt-transport-https -y
-sudo curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo mv minikube-linux-amd64 /usr/local/bin/minikube
-sudo chmod +x /usr/local/bin/minikube
-sudo minikube version
-sudo curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-sudo echo "$(cat kubectl.sha256) kubectl" | sha256sum --check
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-sudo minikube start --driver=docker --force
-
-PODS:
-It is a smallest unit of deployment in K8's.
-It is a group of containers.
-Pods are ephemeral (short living objects)
-Mostly we can use single container inside a pod but if we required, we can create multiple containers inside a same pod.
-when we create a pod, containers inside pods can share the same network namespace, and can share the same storage volumes .
-While creating pod, we must specify the image, along with any necessary configuration and resource limits.
-K8's cannot communicate with containers, they can communicate with only pods.
- We can create this pod in two ways, 
-1. Imperative(command) 
-2. Declarative (Manifest file)
 
 
-IMPERATIVE: 
-kubectl run pod1 --image rahamshaik/paytmtrain:latest
-kubectl get po/pod/pods
-kubectl get po/pod/pods -o wide
-kubectl describe pod pod1
-kubectl delete pod pod1
-
-Declarative:
-vim abc.yml
-
-apiVersion: v1
-kind: Pod
-metadata:
-   name: pod1
-spec:
-  containers:
-    - image: nginx
-      name: cont1
-
-kubectl create -f abc.yml
-kubectl get po/pod/pods
-kubectl get po/pod/pods -o wide
-kubectl describe pod pod1
-kubectl delete pod pod1
-
-HISTORY:
-  1  apt update -y
-    2  apt upgrade -y
-    3  sudo apt install curl wget apt-transport-https -y
-    4  sudo curl -fsSL https://get.docker.com -o get-docker.sh
-    5  ll
-    6  sh get-docker.sh
-    7  sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-    8  ll
-    9  sudo mv minikube-linux-amd64 /usr/local/bin/minikube
-   10  chmod +x /usr/local/bin/minikube
-   11  minikube version
-   12  sudo curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux                                                                                                                                                           /amd64/kubectl"
-   13  ll
-   14  sudo curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/k                                                                                                                                                           ubectl.sha256"
-   15  echo "$(cat kubectl.sha256) kubectl" | sha256sum --check
-   16  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-   17  kubectl version
-   18  kubectl version --client
-   19  minikube start --driver=docker --force
-   20  minikube status
-   21  kubectl get pod
-   22  kubectl get pods
-   23  kubectl get po
-   24  kubectl run pod1 --image rahamshaik/paytmtrain:latest
-   25  kubectl get pod
-   26  kubectl get pods
-   27  kubectl get po
-   28  kubectl describe pod pod1
-   29  kubectl get po
-   30  kubectl delete pod pod1
-   31  kubectl get po
-   32  kubectl run pod1 --image ubuntu
-   33  kubectl get po
-   34  kubectl delete pod pod1
-   35  kubectl run raham --image nginx
-   36  kubectl get po
-   37  kubectl describe pod raham
-   38  kubectl get po -o wide
-   39  kubectl delete pod raham
-   40  vim abc.yml
-   41  kubectl create -f abc.yml
-   42  kubectl get po
-   43  kubectl get po -o wide
-   44  kubectl describe pod pod1
-   45  kubectl delete pod pod1
-   46  history
 ===========================================================
 KOPS:
 INFRASTRUCTURE: Resources used to run our application on cloud.
@@ -429,9 +338,10 @@ EX: Ec2, VPC, ALB, -------------
 
 
 Minikube -- > single node cluster
-All the pods on single node 
+All the pods on single node where as in kops we an create multiple working nodes.
+
 kOps, also known as Kubernetes operations.
-it is an open-source tool that helps you create, destroy, upgrade, and maintain a highly available, production-grade Kubernetes cluster. 
+it is an open-source tool that helps you create, destroy, upgrade, and maintain a highly available, production-grade Kubernetes cluster(It's a third party tool).
 Depending on the requirement, kOps can also provide cloud infrastructure.
 kOps is mostly used in deploying AWS and GCE Kubernetes clusters. 
 But officially, the tool only supports AWS. Support for other cloud providers (such as DigitalOcean, GCP, and OpenStack) are in the beta stage.
@@ -439,11 +349,11 @@ But officially, the tool only supports AWS. Support for other cloud providers (s
 
 ADVANTAGES:
 •	Automates the provisioning of AWS and GCE Kubernetes clusters
-•	Deploys highly available Kubernetes masters
-•	Supports rolling cluster updates
+•	Deploys highly available Kubernetes masters - deploying the cluster on more than one node.
+•	Supports rolling cluster updates - means scaling and scale out.
 •	Autocompletion of commands in the command line
 •	Generates Terraform and CloudFormation configurations
-•	Manages cluster add-ons.
+•	Manages cluster add-ons - we can add the dependencies.
 •	Supports state-sync model for dry-runs and automatic idempotency
 •	Creates instance groups to support heterogeneous clusters
 
@@ -451,7 +361,7 @@ ALTERNATIVES:
 Amazon EKS , MINIKUBE, KUBEADM, RANCHER, TERRAFORM.
 
 
-STEP-1: GIVING PERMISSIONS
+STEP-1: GIVING PERMISSIONS - permisssions(keys) should be given to the kops to create the cluster in the aws console.
 IAM -- > USER -- > CREATE USER -- > NAME: KOPS -- > Attach Polocies Directly -- > AdministratorAccess -- > NEXT -- > CREATE USER
 USER -- > SECURTITY CREDENTIALS -- > CREATE ACCESS KEYS -- > CLI -- > CHECKBOX -- >  CREATE ACCESS KEYS -- > DOWNLOAD 
 
@@ -465,11 +375,12 @@ chmod +x kops-linux-amd64 kubectl
 mv kubectl /usr/local/bin/kubectl
 mv kops-linux-amd64 /usr/local/bin/kops
 
+Below bash cmnds are required only if we are using the Linux OS:
 vim .bashrc
 export PATH=$PATH:/usr/local/bin/  -- > save and exit
 source .bashrc
 
-SETP-3: CREATEING BUCKET 
+SETP-3: CREATING BUCKET - Here bucket is used to store the entire information of the infrastructure.
 aws s3api create-bucket --bucket devopsbyraham007.k8s.local --region us-east-1
 aws s3api put-bucket-versioning --bucket cloudanddevopsbyraham007.k8s.local --region us-east-1 --versioning-configuration Status=Enabled
 export KOPS_STATE_STORE=s3://cloudanddevopsbyraham007.k8s.local
@@ -478,12 +389,21 @@ SETP-4: CREATING THE CLUSTER
 kops create cluster --name rahams.k8s.local --zones us-east-1a --master-count=1 --master-size t2.medium --node-count=2 --node-size t2.micro
 kops update cluster --name rahams.k8s.local --yes --admin
 
+Notes:
+vim .bashrc
+export PATH=$PATH:/usr/local/bin/  -- > save and exit
+source .bashrc
+The above should run before running the script.
+export KOPS_STATE_STORE=s3://cloudanddevopsbyraham007.k8s.local  - this cmnd should be given again as if we are using the script.
+
 
 Suggestions:
  * list clusters with: kops get cluster
  * edit this cluster with: kops edit cluster rahams.k8s.local
  * edit your node instance group: kops edit ig --name=rahams.k8s.local nodes-us-east-1a
- * edit your master instance group: kops edit ig --name=rahams.k8s.local master-us-east-1a
+ * edit your master instance group: kops edit ig --name=rahams.k8s.local master-us-east-1a 
+ * kubectl get no - listing the nodes.
+
 
 
 ADMIN ACTIVITIES:
