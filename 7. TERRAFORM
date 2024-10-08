@@ -83,6 +83,7 @@ terraform plan	: to create execution plan
 terrafrom apply : to create resources( It reads the values from the main file and it points to the corressponding values and it applies).
 terrafrom destroy : to delete resources
 terraform validate: It is used to check the errors in the terraform code. 
+
 for apply and destroy cmnd asks for the user confirmation. 
 provider "aws" {
 region = "ap-south-1"
@@ -125,7 +126,7 @@ instance_type = var.instance_type
 }
 
 variable "instance_type" {
-description = "*"
+description = "*"  ---->optional
 type = string
 default = "t2.micro"
 }
@@ -182,7 +183,7 @@ history:
 VARIABLES, OUTPUTS AND IMPORT
 
 TERRAFORM VAR FILES:
-these files used to store variables seperately on terraform.
+these files used to store variables seperately on terraform as it is easy to change the configurations.
 
 
 cat main.tf
@@ -252,8 +253,8 @@ terraform destroy --auto-approve -var-file="dev.tfvars"
 terraform apply --auto-approve -var-file="test.tfvars"
 terraform destroy --auto-approve -var-file="test.tfvars"
 
-Values of the variables are stored in the tfvars files as it makes easier to create the resources sesperately for dev and test teams.
-If we edit the dev.tfvars files to test.tfvars, then the dev.tfvars will be erased if we create the resources for test.tfvars 
+Varuables values are seperately written to seperate the configurations for the environments.
+
 
 TERRAFORM CLI:
 we can pass inputs for terraform from cli.
@@ -307,7 +308,7 @@ region = "ap-south-1"
 resource "aws_instance" "one" {
 }
 
-terraform import aws_instance.one i-0f4c0d5d3bb6dc758
+terraform import aws_instance.one i-0f4c0d5d3bb6dc758(instance id)
 
   1  sudo yum install -y yum-utils shadow-utils
     2  sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
@@ -404,8 +405,8 @@ Name = "Raham-terraserver"
 }
 }
 
-Terraform taint: used to recreate specific objects, if some of the objects don't work properly. 
-in real time some resource we need to recreat if it will not work properly 
+Terraform taint: used to recreate specific objects, used if some of the objects don't work properly. 
+in real time some resource we need to recreat if it will not work properly.
 then we can use taint concetp
 
 terraform taint aws_instance.four
@@ -445,7 +446,9 @@ lifecycle {
 prevent_destroy = true
 }
 
-TERRAFORM FMT: used to provide the indentation for terraform.
+TERRAFORM FMT: used to provide the indentation for code in terraform.
+terraform fmt
+cat main.tf
 
 VERSION CONSTARINT: used to change the provider version.
 
@@ -462,7 +465,7 @@ terraform {
   }
 }
 
-terraform init -upgrade
+terraform init -upgrade -- run after changing the version.
 
 Local resources:
 
@@ -788,6 +791,7 @@ prevent_destroy = false
 }
 }
 
+/* */ - If we comment any resource then it destroys that resource as well but the apply cmnd doesn't applies to the commented resources.
 Prevent Destroy: it will not delete the resources
 Ignore changes: it will not replicate the changes we have done to server
 Depends on: it will depend on another resource to create.
@@ -827,12 +831,13 @@ Note: while using new block always we need to run terraform init
 otherwise, plugins will not be downloaded
 
 after removing backend setup run this command:
-terraform init -migrate-state
+terraform init -migrate-state -- to delete the connection, if we destroy that server.
 
 
 TERRAFORM REFRESH: used to refresh and replicate the changes to state file.
 it will compare terraform state file with resource.
 if it is exsits it will show, otherwise it will not show.
+The above cmnd is used if we delete the server manually then the state file should be updated.
 
 LOCAL RESOURCES:
 
@@ -942,7 +947,8 @@ resource "aws_security_group" "main" {
   }
 }
 
-
+ongress - inbound rules
+engress - outbound rules
 
 provider "aws" {
 region = "ap-south-1"
