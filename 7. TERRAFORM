@@ -11,7 +11,7 @@ Manual:
 3. commiting mistakes
 
 Automate -- > Terraform -- > code -- > hcl (Hashicorp configuration languge)
-When we create the infrastructure using the configuration file then we can travk the resources.
+When we create the infrastructure using the configuration file then we can track the resources.
 
 its a tool used to make infrastructure automation.
 its a free and opensource.
@@ -48,14 +48,17 @@ TERRAFROM = ALL CLOUDS
 create an instance and install terraform.
 
 INSTALLING TERRAFORM:
+create access keys in aws and run aws configure.
+access keys creation:
+create user - IAM-> New User -> Next -> I want to create an IAM user -> Auto generate pswd -> select users should create the pswd ->Next
+Attach Policies -> admin permissions.
+Select user -> security credentials-> create Access Keys-> OK(download file)
 
+aws configure
 sudo yum install -y yum-utils shadow-utils
 sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 sudo yum -y install terraform
-create access keys in aws and run aws configure.
-access keys creation:
-create user - IAM->
-aws configure
+
 
 
 mkdir terraform
@@ -72,13 +75,15 @@ ami = "ami-03eb6185d756497f8"
 instance_type = "t2.micro"
 }
 one is user labelled.
+will get the ami-id from the AMI catalog or we can get after server creation(under the details of the server)
 
 TERRAFORM COMMANDS:
 terraform init	: initalize the provider plugins on backend
 terraform plan	: to create execution plan
-terrafrom apply : to create resources
+terrafrom apply : to create resources( It reads the values from the main file and it points to the corressponding values and it applies).
 terrafrom destroy : to delete resources
-
+terraform validate: It is used to check the errors in the terraform code. 
+for apply and destroy cmnd asks for the user confirmation. 
 provider "aws" {
 region = "ap-south-1"
 }
@@ -88,7 +93,7 @@ count = 5
 ami = "ami-0b41f7055516b991a"
 instance_type = "t2.micro"
 }
-
+It creates 5 instances simultaneously.
 terraform apply --auto-approve
 terraform destroy --auto-approve
 
@@ -98,8 +103,9 @@ to track the resource activities
 in real time entire resource info is on state file.
 we need to keep it safe
 if we lost this file we cant track the infra.
+state file stores the info about the resources in the terraform.tfstate file.
 Command:
-terraform state list - lists the resources.
+terraform state list - lists the objects in the state list.
 
 terrafrom target: used to destroy the specific resource 
 terraform state list
@@ -179,7 +185,6 @@ TERRAFORM VAR FILES:
 these files used to store variables seperately on terraform.
 
 
-
 cat main.tf
 provider "aws" {
 region = "us-east-1"
@@ -234,12 +239,10 @@ variable "instance_type" {
 
 cat dev.tfvars
 instance_count = 1
-
 instance_type = "t2.micro"
 
 cat test.tfvars
 instance_count = 2
-
 instance_type = "t2.medium"
 
 terraform apply --auto-approve -var-file="dev.tfvars"
@@ -249,6 +252,8 @@ terraform destroy --auto-approve -var-file="dev.tfvars"
 terraform apply --auto-approve -var-file="test.tfvars"
 terraform destroy --auto-approve -var-file="test.tfvars"
 
+Values of the variables are stored in the tfvars files as it makes easier to create the resources sesperately for dev and test teams.
+If we edit the dev.tfvars files to test.tfvars, then the dev.tfvars will be erased if we create the resources for test.tfvars 
 
 TERRAFORM CLI:
 we can pass inputs for terraform from cli.
@@ -268,7 +273,7 @@ Name = "raham-server"
 variable "instance_type" {
 }
 
-terraform apply --auto-approve -var="instance_type=t2.medium"
+terraform apply --auto-approve -var="instance_type=t2.medium" or terraform apply --auto-approve and give the input via CLI.
 terraform destroy --auto-approve -var="instance_type=t2.medium"
 
 TERRAFORM OUTPUTS: used to print the resource properties.
@@ -291,7 +296,7 @@ value = [aws_instance.one.public_ip, aws_instance.one.private_ip, aws_instance.o
 }
 
 
-TERRAFORM IMPORT: used to import and track the resources which is created manually.
+TERRAFORM IMPORT: used to import and track the resources which is created manually.It is used if we want to track the manually created resouces.
 
 
 cat main.tf
@@ -329,7 +334,8 @@ terraform import aws_instance.one i-0f4c0d5d3bb6dc758
    23  terraform apply --aut-approve
    24  terraform apply --auto-approve
    25  vim main.tf
-   26  terraform apply --auto-approve
+   26  terraform apply --auto-
+approve
    27  terraform destroy --auto-approve
    28  vim variable.tf
    29  vim dev.tfvars
@@ -369,8 +375,7 @@ terraform import aws_instance.one i-0f4c0d5d3bb6dc758
    63  terraform import -h
 
 ===================================================
-
-
+Bucket creation,EBS Volume, user creation.
 provider "aws" {
 region = "us-east-1"
 }
@@ -399,8 +404,8 @@ Name = "Raham-terraserver"
 }
 }
 
-Terraform taint: used to recreate specific objects 
-in real time some resource we need to recrete if it will not work properly 
+Terraform taint: used to recreate specific objects, if some of the objects don't work properly. 
+in real time some resource we need to recreat if it will not work properly 
 then we can use taint concetp
 
 terraform taint aws_instance.four
