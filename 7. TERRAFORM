@@ -50,9 +50,10 @@ create an instance and install terraform.
 INSTALLING TERRAFORM:
 create access keys in aws and run aws configure.
 access keys creation:
-create user - IAM-> New User -> Next -> I want to create an IAM user -> Auto generate pswd -> select users should create the pswd ->Next
-Attach Policies -> admin permissions.
-Select user -> security credentials-> create Access Keys-> OK(download file)
+create user - IAM-> New User -> Next -> I want to create an IAM user -> Auto generate pswd -> select users should create the pswd ->Next 
+Attach Policies -> admin permissions->Next -> Create User.
+Select user -> security credentials-> create Access Keys-> CLI ->Done(download file)
+
 
 aws configure
 sudo yum install -y yum-utils shadow-utils
