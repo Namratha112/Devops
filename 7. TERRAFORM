@@ -54,6 +54,8 @@ create user - IAM-> New User -> Next -> I want to create an IAM user -> Auto gen
 Attach Policies -> admin permissions->Next -> Create User.
 Select user -> security credentials-> create Access Keys-> CLI ->Done(download file)
 
+After aws configure also we can change the creds:
+cd /->ls -al -> ll .aws/-> vim .aws/credentials-> modify cred-> save.
 
 aws configure
 sudo yum install -y yum-utils shadow-utils
