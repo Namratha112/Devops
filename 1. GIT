@@ -162,6 +162,7 @@ git status
 
 GET BACK THE DELETED FILE:
 Note: we can restore only tracked files.
+git restore filename.
 
 
 HISTORY:
@@ -528,7 +529,10 @@ Use git push -u (or --set-upstream) when you want to push changes and set up tra
 allowing you to use git push in future commands without specifying the remote and branch names.
 Note: When you want to use the cmnd git push -u origin you have to use the cmnd to set up the tracking 
 ssh-keygen -t rsa -b 4096 -C "tavvanamratha@gmail.com" and just enter for the Enter paraphrase and then us ethe cmnd ls ~/.ssh/id_rsa*
-and then enter cat ....rsa.pub copy that and paste if=t on the github->settings-> SSH and GPG's-> New SSH Key-> paste and Add key.
+and then enter cat ....rsa.pub copy that and paste it on the github->settings-> SSH and GPG's-> New SSH Key-> paste and Add key.
+after setting up the tracking we can directly use git push.
+we can stash untracked files by using git stash -u.
+git stash -m ---- saving the stash with the message.
 
 git clone: it will copy all the files and branches from the github to the local repo.
 git pull: It directly updates the changes to the local repo from the github.
