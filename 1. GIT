@@ -333,8 +333,8 @@ To apply stash atleat one file should be committed at that branch.
 
 
 touch file2
-git stash
-git stash apply
+git stash - to save the changes temporarily. It is used if we want to switch branches without committing the current work.
+git stash apply - This command is used to reapply previously stashed changes from the stash list back to your working directory
 git stash list
 git stash clear
 git stash pop (clears last stash)
